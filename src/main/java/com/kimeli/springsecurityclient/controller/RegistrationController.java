@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 public class RegistrationController {
     @Autowired
@@ -18,13 +20,19 @@ public class RegistrationController {
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher; //for creating event to handle sending email to user to activate account
     @PostMapping("/register")
-    public String registerUser(@RequestBody UserModel userModel){
+    public String registerUser(@RequestBody UserModel userModel, final HttpServletRequest request){
         User user = userService.registerUser(userModel);
         //send email to user to verify account
         applicationEventPublisher.publishEvent(new RegistrationCompleteEvent(
                 user,
-                "url"
+                applicationUrl(request)
         ));
         return "Registration Successful";
+    }
+
+    private String applicationUrl(HttpServletRequest request) {
+        return "http://"+request.getServerName()
+                +":"+request.getServerPort()
+                +request.getContextPath();
     }
 }
