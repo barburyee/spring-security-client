@@ -7,8 +7,10 @@ import com.kimeli.springsecurityclient.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
+@Component
 @Slf4j
 public class RegistrationCompleteListener implements ApplicationListener<RegistrationCompleteEvent> {
     @Autowired
@@ -22,7 +24,7 @@ public class RegistrationCompleteListener implements ApplicationListener<Registr
 
         userService.saveVerificationTokenForUser(token,user);
         //Send email to the user
-        String url = event.getApplicationUrl()+"verifyRegistration?token="+token;
+        String url = event.getApplicationUrl()+"/verifyRegistration?token="+token;
         log.info("Click this link to verify: {}",url);
         //Implement send email method here
 
