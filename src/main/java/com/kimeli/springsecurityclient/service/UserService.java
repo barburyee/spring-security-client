@@ -20,9 +20,11 @@ public interface UserService {
 
     void createPasswordResetForUser(String token, User user);
 
-    String validatePasswordResetToken(String token, PasswordModel passwordModel);
+    String validatePasswordResetToken(String token);
 
     Optional<User> getUserByPasswordResetToken(String token);
 
     void changePassword(User user, String newPassword);
+
+    boolean checkIfValidOldPassword(User user, String oldPassword);
 }

@@ -89,15 +89,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public String validatePasswordResetToken(String token, PasswordModel passwordModel) {
-        PasswordResetToken passwordToken = passwordResetTokenRepository.findByToken(token);
-        if(passwordToken==null){
+    public String validatePasswordResetToken(String token) {
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token);
+        if(passwordResetToken==null){
             return "invalid";
         }
-        User user = passwordToken.getUser();
+        User user = passwordResetToken.getUser();
         Calendar calendar = Calendar.getInstance();
-        if((passwordToken.getExpirationTime().getTime()-calendar.getTime().getTime()) <= 0){
-            passwordResetTokenRepository.delete(passwordToken);
+        if((passwordResetToken.getExpirationTime().getTime()-calendar.getTime().getTime()) <= 0){
+            passwordResetTokenRepository.delete(passwordResetToken);
             return "expired";
         }
         return "valid";
@@ -112,5 +112,10 @@ public class UserServiceImpl implements UserService{
     public void changePassword(User user, String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+    }
+
+    @Override
+    public boolean checkIfValidOldPassword(User user, String oldPassword) {
+        return passwordEncoder.matches(oldPassword, user.getPassword());
     }
 }
