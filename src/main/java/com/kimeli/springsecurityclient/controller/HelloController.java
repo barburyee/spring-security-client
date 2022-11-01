@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HelloController {
-    @GetMapping("/hello")
+    @GetMapping("/api/hello")
     public String hellowThereKimeli(){
         return "Hello, Welcome to SpringBoot Project 18";
     }
